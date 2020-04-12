@@ -1,0 +1,25 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                          https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity
+            name="Sbooker\CommandBus\Command"
+            table="command"
+            repository-class="Sbooker\CommandBus\Infrastructure\Persistence\DoctrineRepository"
+    >
+        <indexes>
+            <index name="ix_command_name_next_attempt_at" columns="name,next_attempt_at"/>
+        </indexes>
+        <id name="id" type="uuid" >
+            <generator strategy="NONE"/>
+        </id>
+        <field name="result" type="json" nullable="true">
+            <options>
+                <option name="jsonb">true</option>
+            </options>
+        </field>
+        <embedded name="normalizedCommand" class="Sbooker\CommandBus\NormalizedCommand" use-column-prefix="false"/>
+        <embedded name="workflow" class="Sbooker\CommandBus\Workflow" use-column-prefix="false"/>
+        <embedded name="attemptCounter" class="Sbooker\CommandBus\AttemptCounter" use-column-prefix="false"/>
+    </entity>
+</doctrine-mapping>    
