@@ -13,4 +13,6 @@ interface WriteStorage
     public function getAndLock(array $names, UuidInterface $id): ?Command;
 
     public function getFirstToProcessAndLock(array $names): ?Command;
+
+    public function save(Command $command): void;
 }

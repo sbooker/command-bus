@@ -85,4 +85,9 @@ class DoctrineRepository extends EntityRepository implements WriteStorage, ReadS
 
         return $builder;
     }
+
+    public function save(Command $command): void
+    {
+        // do nothing
+    }
 }
