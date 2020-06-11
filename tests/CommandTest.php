@@ -80,6 +80,7 @@ final class CommandTest extends TestCase
             [
                 'code' => $error->getCode(),
                 'message' => $error->getMessage(),
+                'class' => get_class($error),
             ],
             $command->getState()->getResult()
         );
@@ -152,10 +153,14 @@ final class CommandTest extends TestCase
     private function getRegistry(Endpoint $endpoint, TimeoutCalculator $calculator, Invoker $onSuccess, Invoker $onFail): Registry
     {
         return new class ($endpoint, $calculator, $onSuccess, $onFail) implements Registry {
-            private Endpoint $endpoint;
-            private TimeoutCalculator $calculator;
-            private Invoker $onSuccess;
-            private Invoker $onFail;
+            /** @var Endpoint  */
+            private $endpoint;
+            /** @var TimeoutCalculator */
+            private $calculator;
+            /** @var Invoker */
+            private $onSuccess;
+            /** @var Invoker */
+            private $onFail;
 
             public function __construct(Endpoint $endpoint, TimeoutCalculator $calculator, Invoker $onSuccess, Invoker $onFail)
             {

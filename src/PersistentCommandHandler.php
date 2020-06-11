@@ -9,16 +9,20 @@ use Sbooker\TransactionManager\TransactionManager;
 
 final class PersistentCommandHandler implements Handler
 {
-    private Registry $registry;
+    /** @var Registry */
+    private $registry;
 
-    private Denormalizer $denormalizer;
+    /** @var Denormalizer */
+    private $denormalizer;
 
-    private WriteStorage $storage;
+    /** @var WriteStorage */
+    private $storage;
 
-    private TransactionManager $transactionManager;
+    /** @var TransactionManager */
+    private $transactionManager;
 
     /** @var string[] */
-    private array $names;
+    private $names;
 
     public function __construct(
         Registry $registry,

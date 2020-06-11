@@ -10,13 +10,17 @@ use Sbooker\TransactionManager\TransactionManager;
 
 final class PersistentCommandCommandBus implements CommandBus
 {
-    private Normalizer $normalizer;
+    /** @var Normalizer  */
+    private $normalizer;
 
-    private WriteStorage $writeStorage;
+    /** @var WriteStorage */
+    private $writeStorage;
 
-    private TransactionManager $transactionManager;
+    /** @var TransactionManager */
+    private $transactionManager;
 
-    private ReadStorage $readStorage;
+    /** @var ReadStorage */
+    private $readStorage;
 
     public function __construct(
         Normalizer $normalizer,

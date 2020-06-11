@@ -8,15 +8,20 @@ use Ramsey\Uuid\UuidInterface;
 
 final class Command
 {
-    private UuidInterface $id;
+    /** @var UuidInterface  */
+    private $id;
 
-    private Workflow $workflow;
+    /** @var Workflow  */
+    private $workflow;
 
-    private AttemptCounter $attemptCounter;
+    /** @var AttemptCounter  */
+    private $attemptCounter;
 
-    private NormalizedCommand $normalizedCommand;
+    /** @var NormalizedCommand  */
+    private $normalizedCommand;
 
-    private ?array $result;
+    /** @var array|null  */
+    private $result;
 
     public function __construct(UuidInterface $id, object $payload, Normalizer $normalizer)
     {

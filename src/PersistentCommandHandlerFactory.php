@@ -8,13 +8,17 @@ use Sbooker\TransactionManager\TransactionManager;
 
 final class PersistentCommandHandlerFactory
 {
-    private Registry $registry;
+    /** @var Registry */
+    private $registry;
 
-    private Denormalizer $denormalizer;
+    /** @var Denormalizer */
+    private $denormalizer;
 
-    private WriteStorage $storage;
+    /** @var WriteStorage */
+    private $storage;
 
-    private TransactionManager $transactionManager;
+    /** @var TransactionManager */
+    private $transactionManager;
 
     public function __construct(Registry $registry, Denormalizer $denormalizer, WriteStorage $storage, TransactionManager $transactionManager)
     {

@@ -10,13 +10,17 @@ use Sbooker\CommandBus\TimeoutCalculator;
 
 final class ContainerizedRegistry implements Registry
 {
-    private CommandServiceRegistry $endpointContainer;
+    /** @var CommandServiceRegistry */
+    private $endpointContainer;
 
-    private CommandServiceRegistry $timeoutCalculatorContainer;
+    /** @var CommandServiceRegistry */
+    private $timeoutCalculatorContainer;
 
-    private ?CommandServiceRegistry $onSuccessInvokerContainer;
+    /** @var CommandServiceRegistry|null */
+    private $onSuccessInvokerContainer;
 
-    private ?CommandServiceRegistry $onFailInvokerContainer;
+    /** @var CommandServiceRegistry|null */
+    private $onFailInvokerContainer;
 
     public function __construct(
         CommandServiceRegistry $endpointContainer,

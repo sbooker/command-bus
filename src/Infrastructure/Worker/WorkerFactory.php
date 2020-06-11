@@ -11,7 +11,8 @@ use Sbooker\EventLoopWorker\Workable;
 
 final class WorkerFactory
 {
-    private TimedWorkerFactory $timedWorkerFactory;
+    /** @var TimedWorkerFactory */
+    private $timedWorkerFactory;
 
     public function __construct(TimedWorkerFactory $timedWorkerFactory)
     {

@@ -6,9 +6,11 @@ namespace Sbooker\CommandBus;
 
 final class AttemptCounter
 {
-    private int $count;
+    /** @var int */
+    private $count;
 
-    private \DateTimeImmutable $nextAttemptAt;
+    /** @var \DateTimeImmutable  */
+    private $nextAttemptAt;
 
     final public function __construct()
     {

@@ -13,7 +13,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 final class ExecuteCommand extends Command
 {
-    private Handler $handler;
+    /** @var Handler */
+    private $handler;
 
     public function __construct(Handler $handler)
     {

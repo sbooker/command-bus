@@ -8,12 +8,14 @@ use Psr\Container\ContainerInterface;
 
 final class ContainerAdapter implements CommandServiceRegistry
 {
-    private ContainerInterface $container;
+    /** @var ContainerInterface */
+    private $container;
 
-    private ?string $defaultServiceId;
+    /** @var string|null */
+    private $defaultServiceId;
 
     /** @var array [string $name => string $id] */
-    private array $idMap;
+    private $idMap;
 
     public function __construct(ContainerInterface $container, ?string $defaultServiceId = null, array $idMap = [])
     {

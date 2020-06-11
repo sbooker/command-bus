@@ -12,7 +12,7 @@ class ClassNameMap implements NameGiver
     /**
      * @var array Class::class => name
      */
-    private array $map;
+    private $map;
 
     public function __construct(array $map)
     {

@@ -6,9 +6,11 @@ namespace Sbooker\CommandBus;
 
 class State
 {
-    private Status $status;
+    /** @var Status */
+    private $status;
 
-    private ?array $result;
+    /** @var array|null */
+    private $result;
 
     public function __construct(Status $status, ?array $result)
     {

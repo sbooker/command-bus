@@ -8,7 +8,8 @@ use Sbooker\CommandBus\TimeoutCalculator;
 
 final class BinExp implements TimeoutCalculator
 {
-    private int $maxAttempts;
+    /** @var int */
+    private $maxAttempts;
 
     public function __construct(int $maxAttempts)
     {

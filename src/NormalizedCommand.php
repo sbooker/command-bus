@@ -6,9 +6,11 @@ namespace Sbooker\CommandBus;
 
 final class NormalizedCommand
 {
-    private string $name;
+    /** @var string */
+    private $name;
 
-    private ?array $payload;
+    /** @var array|null */
+    private $payload;
 
     public function __construct(string $name, ?array $payload)
     {

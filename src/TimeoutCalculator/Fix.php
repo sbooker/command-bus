@@ -8,9 +8,11 @@ use Sbooker\CommandBus\TimeoutCalculator;
 
 class Fix implements TimeoutCalculator
 {
-    private int $timeout;
+    /** @var int */
+    private $timeout;
 
-    private int $maxAttempts;
+    /** @var int */
+    private $maxAttempts;
 
     public function __construct(int $timeout, int $maxAttempts)
     {

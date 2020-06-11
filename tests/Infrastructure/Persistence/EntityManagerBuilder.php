@@ -14,10 +14,6 @@ use Sbooker\CommandBus\Infrastructure\Persistence\Mapping\StatusType;
 
 final class EntityManagerBuilder
 {
-    public const PGSQL12 = 'pgsql12';
-    public const MYSQL5 = 'mysql5';
-    public const MYSQL8 = 'mysql8';
-
     private static ?EntityManagerBuilder $me = null;
 
     private Configuration $configuration;
@@ -59,38 +55,38 @@ final class EntityManagerBuilder
         return self::$me;
     }
 
-    public function get(string $db): EntityManager
+    public function get(TestDatabases $db): EntityManager
     {
-        if (!isset($this->ems[$db])) {
-            $this->ems[$db] = EntityManager::create(self::getParams($db), $this->configuration);
+        if (!isset($this->ems[$db->getRawValue()])) {
+            $this->ems[$db->getRawValue()] = EntityManager::create(self::getParams($db), $this->configuration);
         }
 
-        return $this->ems[$db];
+        return $this->ems[$db->getRawValue()];
     }
 
-    private static function getParams(string $db): array
+    private static function getParams(TestDatabases $db): array
     {
         switch ($db) {
-            case self::PGSQL12:
+            case TestDatabases::postgresql12():
                 $params = [
                     'driver' => 'pdo_pgsql',
-                    'host' => self::PGSQL12,
+                    'host' => 'pgsql12',
                     'port' => 5432,
                     'server_version' => '12',
                 ];
                 break;
-            case self::MYSQL5:
+            case TestDatabases::mysql5():
                 $params = [
                     'driver' => 'pdo_mysql',
-                    'host' => self::MYSQL5,
+                    'host' => 'mysql5',
                     'port' => 3306,
                     'server_version' => '5',
                 ];
                 break;
-            case self::MYSQL8:
+            case TestDatabases::mysql8():
                 $params = [
                     'driver' => 'pdo_mysql',
-                    'host' => self::MYSQL8,
+                    'host' => 'mysql8',
                     'port' => 3306,
                     'server_version' => '8',
                 ];

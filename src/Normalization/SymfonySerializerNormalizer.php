@@ -11,9 +11,11 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 final class SymfonySerializerNormalizer implements Normalizer
 {
-    private NameGiver $nameGiver;
+    /** @var NameGiver */
+    private $nameGiver;
 
-    private NormalizerInterface $normalizer;
+    /** @var NormalizerInterface */
+    private $normalizer;
 
     public function __construct(NameGiver $nameGiver, NormalizerInterface $normalizer)
     {

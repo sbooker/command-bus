@@ -69,6 +69,7 @@ class DoctrineRepository extends EntityRepository implements WriteStorage, ReadS
                     )
                 )
                 ->andWhere('t.attemptCounter.nextAttemptAt < :now')
+                ->orderBy('t.attemptCounter.nextAttemptAt', 'ASC')
                 ->setParameter('now', new \DateTimeImmutable())
                 ->setMaxResults(1)
                 ->getQuery()

@@ -11,9 +11,11 @@ use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 class SymfonySerializerDenormalizer implements Denormalizer
 {
-    private NameGiver $nameGiver;
+    /** @var NameGiver  */
+    private $nameGiver;
 
-    private DenormalizerInterface $denormalizer;
+    /** @var DenormalizerInterface */
+    private $denormalizer;
 
     public function __construct(NameGiver $nameGiver, DenormalizerInterface $denormalizer)
     {

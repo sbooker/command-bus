@@ -9,7 +9,8 @@ use Sbooker\EventLoopWorker\Workable;
 
 final class CommandProcessor implements Workable
 {
-    private Handler $handler;
+    /** @var Handler */
+    private $handler;
 
     public function __construct(Handler $handler)
     {

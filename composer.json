@@ -9,23 +9,23 @@
             "email": "sergey.knigin.dev@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
-    "prefer-stable": true,
+    "minimum-stability": "stable",
     "require": {
-        "php": "^7.4",
+        "php": "^7.2",
         "ramsey/uuid": "^4.0",
-        "sbooker/workflow": "^1.0",
-        "sbooker/transaction-manager": "^1.0",
+        "sbooker/workflow": ">=0.9 <1.0",
+        "sbooker/transaction-manager": ">=0.9 <1.0",
         "symfony/serializer": "^5.0",
         "symfony/property-access": "^5.0"
     },
     "require-dev": {
         "doctrine/orm": "^2.7",
-        "phpunit/phpunit": "^9.0",
+        "ocramius/package-versions": "1.4.*",
+        "phpunit/phpunit": "^7.5",
         "psr/container": "1.0.0",
         "ramsey/uuid-doctrine": "^1.6",
         "sbooker/enumerable-doctrine": "^1.0",
-        "sbooker/doctrine-transaction-handler": "^1.0"
+        "sbooker/doctrine-transaction-handler": ">=0.9 <1.0"
     },
     "suggest": {
         "doctrine/orm": "If you want use DB persistence with Doctrine",

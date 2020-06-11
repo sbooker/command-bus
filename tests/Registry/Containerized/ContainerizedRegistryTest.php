@@ -27,7 +27,7 @@ class ContainerizedRegistryTest extends TestCase
                 $this->createContainerAdapter($commandName, $expectedEndpoint),
                 $this->createContainerAdapter($commandName, $expectedTimeoutCalculator),
                 $this->createContainerAdapter($commandName, $expectedOnSuccess),
-                $this->createContainerAdapter($commandName, $expectedOnFail),
+                $this->createContainerAdapter($commandName, $expectedOnFail)
             );
 
         $endpoint = $registry->getEndpoint($commandName);
