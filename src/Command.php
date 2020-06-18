@@ -54,6 +54,7 @@ final class Command
                 'code' => $exception->getCode(),
                 'message' => $exception->getMessage(),
                 'class' => get_class($exception),
+                'trace' => $exception->getTraceAsString(),
             ];
         }
     }
