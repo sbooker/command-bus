@@ -8,7 +8,7 @@
             repository-class="Sbooker\CommandBus\Infrastructure\Persistence\DoctrineRepository"
     >
         <indexes>
-            <index name="ix_command_name_next_attempt_at" columns="name,next_attempt_at"/>
+            <index name="ix_command_name_status_next_attempt_at" columns="name,status,next_attempt_at"/>
         </indexes>
         <id name="id" type="uuid" >
             <generator strategy="NONE"/>
