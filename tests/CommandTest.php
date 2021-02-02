@@ -81,6 +81,7 @@ final class CommandTest extends TestCase
                 'code' => $error->getCode(),
                 'message' => $error->getMessage(),
                 'class' => get_class($error),
+                'trace' => $error->getTraceAsString(),
             ],
             $command->getState()->getResult()
         );

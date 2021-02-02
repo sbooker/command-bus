@@ -38,6 +38,7 @@ final class Command
 
             $registry->getEndpoint($this->getName())
                 ->process(
+                    $this->id,
                     $this->normalizedCommand->denormalizeWith($denormalizer)
                 );
 

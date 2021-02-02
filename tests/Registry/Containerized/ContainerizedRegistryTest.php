@@ -62,7 +62,7 @@ class ContainerizedRegistryTest extends TestCase
     private function createEndpoint(): Endpoint
     {
         return new class implements Endpoint {
-            public function process(object $payload): void { /*_*/ }
+            public function process(UuidInterface $id, object $payload): void { /*_*/ }
         };
     }
 
