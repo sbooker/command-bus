@@ -6,7 +6,7 @@ namespace Sbooker\CommandBus;
 
 use Ramsey\Uuid\UuidInterface;
 
-final class Command
+/* final */ class Command
 {
     private UuidInterface $id;
 
