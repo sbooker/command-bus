@@ -25,7 +25,7 @@ final class PersistentCommandHandler implements Handler
         Denormalizer $denormalizer,
         WriteStorage $storage,
         TransactionManager $transactionManager,
-        array $names
+        array $names = []
     ) {
         $this->registry = $registry;
         $this->denormalizer = $denormalizer;

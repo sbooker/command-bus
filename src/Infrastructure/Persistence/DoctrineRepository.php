@@ -80,8 +80,12 @@ class DoctrineRepository extends EntityRepository implements WriteStorage, ReadS
     private function createQueryBuilderWithNamesCondition(string $alias, array $names): QueryBuilder
     {
         $builder = $this->createQueryBuilder($alias);
-        $expr = $builder->expr();
 
+        if ([] === $names) {
+            return $builder;
+        }
+
+        $expr = $builder->expr();
         $builder->andWhere($expr->in("$alias.normalizedCommand.name", $names));
 
         return $builder;

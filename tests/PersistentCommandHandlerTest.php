@@ -37,11 +37,12 @@ class PersistentCommandHandlerTest extends BusTestCase
         $this->assertFalse($result);
     }
 
-    public function testHandleNextWithCommands(): void
+    /**
+     * @dataProvider namesConfigurationExamples
+     */
+    public function testHandleNextWithCommands(string $commandName, array $names): void
     {
         $commandId = Uuid::uuid4();
-        $commandName = 'command.name';
-        $names = [$commandName];
         $payload = new \stdClass();
         $normalizedPayload = (array)$payload;
         $command = new Command($commandId, $payload, $this->createNormalizer($payload, $commandName, $normalizedPayload));
@@ -58,6 +59,14 @@ class PersistentCommandHandlerTest extends BusTestCase
         $result = $handler->handleNext();
 
         $this->assertTrue($result);
+    }
+
+    public function namesConfigurationExamples(): array
+    {
+        return [
+            [ 'command.name', ['command.name']],
+            [ 'command.name', []],
+        ];
     }
 
     public function testHandleNoCommands(): void
