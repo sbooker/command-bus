@@ -111,7 +111,18 @@ final class EntityManagerBuilder
             );
     }
 
-    private function __sleep() {}
-    private function __wakeup() {}
-    private function __clone() {}
+    final public function __clone()
+    {
+        throw new \BadMethodCallException('Cloning is restricted for enumerable types');
+    }
+
+    final public function __sleep()
+    {
+        throw new \BadMethodCallException('Serialization is restricted for enumerable types');
+    }
+
+    final public function __wakeup()
+    {
+        throw new \BadMethodCallException('Serialization is restricted for enumerable types');
+    }
 }

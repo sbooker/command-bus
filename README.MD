@@ -12,6 +12,14 @@ Install via [Composer][composer]:
 ```bash
 composer require sbooker/command-bus
 ```
+## Nested transactions
+
+Enpoints may use transactions. Strongly recommends use Sbooker/TransactionManager for it.
+
+You need to make sure that firstly do all checks are and throws exceptions.
+
+And only then mutates state of entities.
+
 ## Example usage with Symfony and Doctrine (while bundle not written)
 
 Install suggest libraries:

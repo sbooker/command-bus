@@ -60,6 +60,11 @@ use Ramsey\Uuid\UuidInterface;
         return new State($this->workflow->getStatus(), $this->result);
     }
 
+    public function getAttemptCount(): int
+    {
+        return $this->attemptCounter->getCount();
+    }
+
     /**
      * @throws \Sbooker\Workflow\FlowError
      */

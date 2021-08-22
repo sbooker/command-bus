@@ -38,7 +38,7 @@ final class AttemptCounter
         return new \DateTimeImmutable("+ {$calculator->calculate($this->getCount())} seconds");
     }
 
-    private function getCount(): int
+    public function getCount(): int
     {
         return $this->count;
     }

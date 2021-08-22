@@ -5,7 +5,7 @@ services:
       context: ""
       dockerfile: Dockerfile
     environment:
-      XDEBUG_CONFIG: remote_host=host.docker.internal remote_port=9000 idekey=PHPSTORM
+      XDEBUG_CONFIG: client_host=host.docker.internal
       PHP_IDE_CONFIG: serverName=app
     volumes:
       - ~/.ssh:/home/app/.ssh:ro
@@ -14,8 +14,8 @@ services:
     restart: always
     depends_on:
       - pgsql12
-#      - mysql5
-#      - mysql8
+      - mysql5
+      - mysql8
 
   pgsql12:
     image: postgres:12
@@ -24,8 +24,6 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: user
       POSTGRES_DB: test
-    volumes:
-    - "./postgres.conf:/var/lib/postgresql/data/postgresql.conf"
 
   mysql5:
     image: mysql/mysql-server:5.5

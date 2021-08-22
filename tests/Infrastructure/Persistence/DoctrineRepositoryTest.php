@@ -4,27 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\Sbooker\CommandBus\Infrastructure\Persistence;
 
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\SchemaTool;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Sbooker\CommandBus\AttemptCounter;
 use Sbooker\CommandBus\Command;
-use Sbooker\CommandBus\Infrastructure\Persistence\DoctrineRepository;
 use Sbooker\CommandBus\NormalizedCommand;
 use Sbooker\CommandBus\Normalizer;
 use Sbooker\CommandBus\Workflow;
 use Sbooker\CommandBus\WriteStorage;
-use Sbooker\TransactionManager\DoctrineTransactionHandler;
-use Sbooker\TransactionManager\TransactionManager;
-use Tests\Sbooker\CommandBus\TestCase;
 
-class DoctrineRepositoryTest extends TestCase
+class DoctrineRepositoryTest extends PersistenceTestCase
 {
-    private SchemaTool $schemaTool;
-
-    private TransactionManager $transactionManager;
-
     /**
      * @dataProvider dbs
      */
@@ -59,7 +49,7 @@ class DoctrineRepositoryTest extends TestCase
         $this->makeFixtures($repository, $expectedCommand);
 
         $command=
-            $this->transactionManager->transactional(function () use ($repository, $commandId, $commandName) {
+            $this->getTransactionManager()->transactional(function () use ($repository, $commandId, $commandName) {
                 return $repository->getAndLock([$commandName, 'other.command'], $commandId);
             });
 
@@ -85,82 +75,13 @@ class DoctrineRepositoryTest extends TestCase
         $this->makeFixtures($repository, $secondCommand);
 
         $command=
-            $this->transactionManager->transactional(function () use ($repository, $expectedCommandName, $otherCommandName) {
+            $this->getTransactionManager()->transactional(function () use ($repository, $expectedCommandName, $otherCommandName) {
                 return $repository->getFirstToProcessAndLock([$expectedCommandName, $otherCommandName]);
             });
 
         $this->assertCommandEquals($expectedCommand, $command);
 
         $this->tearDownDbDeps($em);
-    }
-
-    private function getRepository(EntityManager $em): DoctrineRepository
-    {
-        return $em->getRepository(Command::class);
-    }
-
-    private function setUpDbDeps(string $db): EntityManager
-    {
-        $em = EntityManagerBuilder::me()->get($db);
-        $this->schemaTool = new SchemaTool($em);
-        $this->transactionManager = new TransactionManager(new DoctrineTransactionHandler($em));
-        $this->schemaTool->dropSchema($this->getMetadata($em));
-        $this->schemaTool->createSchema($this->getMetadata($em));
-
-        return $em;
-    }
-
-    private function tearDownDbDeps(EntityManager $em): void
-    {
-        $this->schemaTool->dropSchema($this->getMetadata($em));
-        $this->em = null;
-    }
-
-    private function getMetadata(EntityManager $em)
-    {
-        return $em->getMetadataFactory()->getAllMetadata();
-    }
-
-    public function dbs(): array
-    {
-        return [
-            [ EntityManagerBuilder::PGSQL12 ],
-            [ EntityManagerBuilder::MYSQL5 ],
-            [ EntityManagerBuilder::MYSQL8 ],
-        ];
-    }
-
-    private function createCommand(UuidInterface $commandId, string $commandName, string $nextAttemptAt = 'now'): Command
-    {
-        $command = new Command($commandId, new \stdClass(), $this->createNormalizer($commandName));
-        $workflow = $this->getPrivatePropertyValue($command, 'attemptCounter');
-        $this->openProperty($workflow, 'nextAttemptAt')->setValue($workflow, new \DateTimeImmutable($nextAttemptAt));
-
-        return $command;
-    }
-
-    private function createNormalizer(string $commandName): Normalizer
-    {
-        return new class ($commandName) implements Normalizer {
-            private string $commandName;
-
-            public function __construct(string $commandName)
-            {
-                $this->commandName = $commandName;
-            }
-
-            public function normalize(object $command): NormalizedCommand
-            {
-                return new NormalizedCommand($this->commandName, null);
-            }
-        };
-    }
-
-    private function makeFixtures(WriteStorage $repository, Command $expectedCommand): void
-    {
-        $this->transactionManager->transactional(function () use ($repository, $expectedCommand) {
-            $repository->add($expectedCommand);
-        });
     }
 
     private function assertCommandEquals(Command $expected, Command $given): void
