@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sbooker\CommandBus;
+namespace Sbooker\CommandBus\Tests;
 
 use Sbooker\CommandBus\Command;
 use Sbooker\CommandBus\NameGiver;
@@ -31,16 +31,22 @@ abstract class BusTestCase extends \PHPUnit\Framework\TestCase
         return $mock;
     }
 
-    final protected function createTransactionManager(): TransactionManager
+    final protected function createTransactionManager(int $persistCounter = 0, object $toPersist = null, int $trasnactionCounter = 1): TransactionManager
     {
         return
             new TransactionManager(
-                new class implements TransactionHandler {
-                    public function begin(): void { }
-                    public function commit(): void { }
-                    public function rollBack(): void { }
-                    public function clear(): void { }
-                }
+                $this->createTransactionHandler($persistCounter, $toPersist, $trasnactionCounter)
             );
+    }
+
+    private function createTransactionHandler(int $persistCounter = 0, object $toPersist = null, int $trasnactionCounter = 1): TransactionHandler
+    {
+        $mock = $this->createMock(TransactionHandler::class);
+        $mock->expects($this->exactly($trasnactionCounter))->method('begin');
+        $mock->expects($this->exactly($persistCounter))->method('persist');
+        $mock->expects($this->exactly($trasnactionCounter))->method('commit');
+        $mock->expects($this->never())->method('rollback');
+
+        return $mock;
     }
 }

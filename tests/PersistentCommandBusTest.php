@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sbooker\CommandBus;
+namespace Sbooker\CommandBus\Tests;
 
 use Ramsey\Uuid\Uuid;
 use Sbooker\CommandBus\Command;
@@ -27,8 +27,7 @@ final class PersistentCommandBusTest extends BusTestCase
         $bus =
             new PersistentCommandCommandBus(
                 $normalizer,
-                $this->createAddWriteStorage(0, $command),
-                $this->createTransactionManager(),
+                $this->createTransactionManager(0, $command, 0),
                 $this->createReadStorage($command)
             );
 
@@ -44,8 +43,7 @@ final class PersistentCommandBusTest extends BusTestCase
         $bus =
             new PersistentCommandCommandBus(
                 $normalizer,
-                $this->createAddWriteStorage(1, $command),
-                $this->createTransactionManager(),
+                $this->createTransactionManager(1, $command),
                 $this->createReadStorage(null)
             );
 
@@ -61,8 +59,7 @@ final class PersistentCommandBusTest extends BusTestCase
         $bus =
             new PersistentCommandCommandBus(
                 $normalizer,
-                $this->createAddWriteStorage(0, $command),
-                $this->createTransactionManager(),
+                $this->createTransactionManager(0, $command, 0),
                 $this->createReadStorage($command)
             );
 
@@ -80,22 +77,13 @@ final class PersistentCommandBusTest extends BusTestCase
         $bus =
             new PersistentCommandCommandBus(
                 $normalizer,
-                $this->createAddWriteStorage(0, $command),
-                $this->createTransactionManager(),
+                $this->createTransactionManager(0, $command, 0),
                 $this->createReadStorage(null)
             );
 
         $state = $bus->getState($commandId);
 
         $this->assertNull($state);
-    }
-
-    private function createAddWriteStorage(int $calls, Command $command): WriteStorage
-    {
-        $mock = $this->createMock(WriteStorage::class);
-        $mock->expects($this->exactly($calls))->method('add');
-
-        return $mock;
     }
 
     final protected function createNormalizer(?object $payload): Normalizer

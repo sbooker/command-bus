@@ -12,20 +12,16 @@ final class PersistentCommandCommandBus implements CommandBus
 {
     private Normalizer $normalizer;
 
-    private WriteStorage $writeStorage;
-
     private TransactionManager $transactionManager;
 
     private ReadStorage $readStorage;
 
     public function __construct(
         Normalizer $normalizer,
-        WriteStorage $writeStorage,
         TransactionManager $transactionManager,
         ReadStorage $readStorage
     ) {
         $this->normalizer = $normalizer;
-        $this->writeStorage = $writeStorage;
         $this->transactionManager = $transactionManager;
         $this->readStorage = $readStorage;
     }
@@ -40,7 +36,7 @@ final class PersistentCommandCommandBus implements CommandBus
         $persistentCommand = new Command($id, $command, $this->normalizer);
 
         $this->transactionManager->transactional(function () use ($persistentCommand): void {
-            $this->writeStorage->add($persistentCommand);
+            $this->transactionManager->persist($persistentCommand);
         });
     }
 

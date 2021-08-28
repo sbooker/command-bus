@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sbooker\CommandBus\Infrastructure\Persistence;
+namespace Sbooker\CommandBus\Tests\Infrastructure\Persistence;
 
 use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\Configuration;
@@ -41,6 +41,7 @@ final class EntityManagerBuilder
         $configuration->setMetadataDriverImpl(
             new SimplifiedXmlDriver([
                 __DIR__ . '/../../../src/Infrastructure/Persistence/Mapping' => 'Sbooker\CommandBus',
+                __DIR__ . '/Mapping' => 'Sbooker\CommandBus\Tests\Infrastructure\Persistence',
             ])
         );
         $configuration->setNamingStrategy(new UnderscoreNamingStrategy());

@@ -17,14 +17,6 @@ use Ramsey\Uuid\UuidInterface;
 class DoctrineRepository extends EntityRepository implements WriteStorage, ReadStorage
 {
     /**
-     * @throws \Doctrine\ORM\ORMException
-     */
-    public function add(Command $command): void
-    {
-        $this->getEntityManager()->persist($command);
-    }
-
-    /**
      * @throws \Doctrine\ORM\NonUniqueResultException
      * @throws \Doctrine\ORM\TransactionRequiredException
      */
@@ -89,10 +81,5 @@ class DoctrineRepository extends EntityRepository implements WriteStorage, ReadS
         $builder->andWhere($expr->in("$alias.normalizedCommand.name", $names));
 
         return $builder;
-    }
-
-    public function save(Command $command): void
-    {
-        // do nothing
     }
 }
