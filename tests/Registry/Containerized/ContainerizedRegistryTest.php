@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sbooker\CommandBus\Registry\Containerized;
+namespace Sbooker\CommandBus\Tests\Registry\Containerized;
 
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\UuidInterface;

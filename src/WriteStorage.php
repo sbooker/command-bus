@@ -8,11 +8,7 @@ use Ramsey\Uuid\UuidInterface;
 
 interface WriteStorage
 {
-    public function add(Command $command): void;
-
     public function getAndLock(array $names, UuidInterface $id): ?Command;
 
     public function getFirstToProcessAndLock(array $names): ?Command;
-
-    public function save(Command $command): void;
 }

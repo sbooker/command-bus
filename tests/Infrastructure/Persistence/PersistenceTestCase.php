@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sbooker\CommandBus\Infrastructure\Persistence;
+namespace Sbooker\CommandBus\Tests\Infrastructure\Persistence;
 
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
@@ -11,10 +11,9 @@ use Sbooker\CommandBus\Command;
 use Sbooker\CommandBus\Infrastructure\Persistence\DoctrineRepository;
 use Sbooker\CommandBus\NormalizedCommand;
 use Sbooker\CommandBus\Normalizer;
-use Sbooker\CommandBus\WriteStorage;
 use Sbooker\TransactionManager\DoctrineTransactionHandler;
 use Sbooker\TransactionManager\TransactionManager;
-use Tests\Sbooker\CommandBus\TestCase;
+use Sbooker\CommandBus\Tests\TestCase;
 
 abstract class PersistenceTestCase extends TestCase
 {
@@ -52,10 +51,12 @@ abstract class PersistenceTestCase extends TestCase
         return $command;
     }
 
-    final protected function makeFixtures(WriteStorage $repository, Command $expectedCommand): void
+    final protected function makeFixtures(object ... $objects): void
     {
-        $this->getTransactionManager()->transactional(function () use ($repository, $expectedCommand) {
-            $repository->add($expectedCommand);
+        $this->getTransactionManager()->transactional(function () use ($objects) {
+            foreach ($objects as $object) {
+                $this->getTransactionManager()->persist($object);
+            }
         });
     }
 

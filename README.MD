@@ -4,6 +4,8 @@
 [![Software License][badge-license]][license]
 [![PHP Version][badge-php]][php]
 [![Total Downloads][badge-downloads]][downloads]
+[![Build Status](https://travis-ci.org/sbooker/command-bus.svg?branch=0.7.x)](https://travis-ci.org/sbooker/command-bus)
+[![codecov](https://codecov.io/gh/sbooker/command-bus/branch/0.7.x/graph/badge.svg?token=3uCI9t0M2Q)](https://codecov.io/gh/sbooker/command-bus)
 
  And persistent via [Doctrine ORM][doctrine-orm] implementation
 

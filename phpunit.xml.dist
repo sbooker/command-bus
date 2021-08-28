@@ -1,21 +1,21 @@
-<phpunit
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/latest/phpunit.xsd"
-        bootstrap="vendor/autoload.php"
-        forceCoversAnnotation="false"
-        beStrictAboutCoversAnnotation="false"
-        beStrictAboutOutputDuringTests="true"
-        beStrictAboutTodoAnnotatedTests="true"
-        beStrictAboutTestsThatDoNotTestAnything="false"
-        verbose="true">
-    <testsuite name="default">
-        <directory suffix="Test.php">tests</directory>
-        <exclude>tests/Infrastructure</exclude>
-    </testsuite>
-
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">src</directory>
-        </whitelist>
-    </filter>
+<?xml version="1.0"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd"
+         bootstrap="vendor/autoload.php"
+         forceCoversAnnotation="false"
+         beStrictAboutCoversAnnotation="false"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutTodoAnnotatedTests="true"
+         beStrictAboutTestsThatDoNotTestAnything="false"
+         verbose="true"
+>
+  <coverage processUncoveredFiles="true">
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+  </coverage>
+  <testsuite name="default">
+    <directory suffix="Test.php">tests</directory>
+    <exclude>tests/Infrastructure</exclude>
+  </testsuite>
 </phpunit>

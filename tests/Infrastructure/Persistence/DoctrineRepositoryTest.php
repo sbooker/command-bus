@@ -2,16 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sbooker\CommandBus\Infrastructure\Persistence;
+namespace Sbooker\CommandBus\Tests\Infrastructure\Persistence;
 
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Sbooker\CommandBus\AttemptCounter;
 use Sbooker\CommandBus\Command;
-use Sbooker\CommandBus\NormalizedCommand;
-use Sbooker\CommandBus\Normalizer;
 use Sbooker\CommandBus\Workflow;
-use Sbooker\CommandBus\WriteStorage;
 
 class DoctrineRepositoryTest extends PersistenceTestCase
 {
@@ -26,7 +23,7 @@ class DoctrineRepositoryTest extends PersistenceTestCase
         $commandId = Uuid::uuid4();
         $commandName = 'command.name';
         $expectedCommand = $this->createCommand($commandId, $commandName);
-        $this->makeFixtures($repository, $expectedCommand);
+        $this->makeFixtures($expectedCommand);
 
         $command = $repository->get($commandId);
 
@@ -46,7 +43,7 @@ class DoctrineRepositoryTest extends PersistenceTestCase
         $commandId = Uuid::uuid4();
         $commandName = 'command.name';
         $expectedCommand = $this->createCommand($commandId, $commandName);
-        $this->makeFixtures($repository, $expectedCommand);
+        $this->makeFixtures($expectedCommand);
 
         $command=
             $this->getTransactionManager()->transactional(function () use ($repository, $commandId, $commandName) {
@@ -71,8 +68,8 @@ class DoctrineRepositoryTest extends PersistenceTestCase
         $otherCommandName = 'other.command.name';
         $expectedCommand = $this->createCommand(Uuid::uuid4(), $expectedCommandName, '-10seconds');
         $secondCommand = $this->createCommand(Uuid::uuid4(), $otherCommandName, '-5seconds');
-        $this->makeFixtures($repository, $expectedCommand);
-        $this->makeFixtures($repository, $secondCommand);
+        $this->makeFixtures($expectedCommand);
+        $this->makeFixtures($secondCommand);
 
         $command=
             $this->getTransactionManager()->transactional(function () use ($repository, $expectedCommandName, $otherCommandName) {

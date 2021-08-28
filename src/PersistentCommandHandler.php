@@ -45,7 +45,7 @@ final class PersistentCommandHandler implements Handler
 
                 $command->execute($this->registry, $this->denormalizer);
 
-                $this->storage->save($command);
+                $this->transactionManager->save($command);
 
                 return true;
             });
@@ -61,7 +61,7 @@ final class PersistentCommandHandler implements Handler
 
             $command->execute($this->registry, $this->denormalizer);
 
-            $this->storage->save($command);
+            $this->transactionManager->save($command);
         });
     }
 }

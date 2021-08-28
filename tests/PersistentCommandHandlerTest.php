@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sbooker\CommandBus;
+namespace Sbooker\CommandBus\Tests;
 
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;

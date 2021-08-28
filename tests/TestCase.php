@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sbooker\CommandBus;
+namespace Sbooker\CommandBus\Tests;
 
 abstract class TestCase extends \PHPUnit\Framework\TestCase
 {

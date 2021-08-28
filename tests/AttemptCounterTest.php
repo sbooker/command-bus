@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Sbooker\CommandBus;
+namespace Sbooker\CommandBus\Tests;
 
 use Sbooker\CommandBus\AttemptCounter;
 use Sbooker\CommandBus\TimeoutCalculator;
