@@ -49,7 +49,6 @@ services:
     class: Sbooker\CommandBus\PersistentCommandCommandBus
     arguments:
       - '@Sbooker\CommandBus\Normalizer'
-      - '@Sbooker\CommandBus\WriteStorage'
       - '@Sbooker\TransactionManager\TransactionManager'
       - '@Sbooker\CommandBus\ReadStorage'
 
@@ -105,9 +104,6 @@ services:
     arguments:
       -
         ## FQCN to command name map
-
-  Sbooker\CommandBus\WriteStorage:
-    alias: Sbooker\CommandBus\Infrastructure\Persistence\DoctrineRepository
 
   Sbooker\CommandBus\ReadStorage:
     alias: Sbooker\CommandBus\Infrastructure\Persistence\DoctrineRepository
