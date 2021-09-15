@@ -140,7 +140,7 @@ final class NestedTransactionTest extends PersistenceTestCase
         return new CallableEndpoint(
             function () use ($em, $entityId, $newValue): void {
                 $this->getTransactionManager()->transactional(function () use ($em, $entityId, $newValue): void {
-                    $entity = $this->getLockedStoredTestEntity($em, $entityId);
+                    $entity = $this->getLockedStoredTestEntity($entityId);
                     $entity->setValue($newValue);
                     $this->getTransactionManager()->save($entity);
                     throw new \Exception(self::ERROR_MESSAGE, self::ERROR_CODE);
@@ -163,7 +163,7 @@ final class NestedTransactionTest extends PersistenceTestCase
         $entity = new TestEntity($entityId, 'oldValue');
         $this->makeFixtures($command, $entity);
         $value = 'newValue';
-        $endpoint = $this->createSaveCommandProcessor($em, $entityId, $value);
+        $endpoint = $this->createSaveCommandProcessor($entityId, $value);
 
         $this->createCommandHandler($commandName, $em, $endpoint)->handleNext();
 
@@ -179,14 +179,13 @@ final class NestedTransactionTest extends PersistenceTestCase
         $this->tearDownDbDeps($em);
     }
 
-    private function createSaveCommandProcessor(EntityManagerInterface $em, UuidInterface $entityId, string $newValue): Endpoint
+    private function createSaveCommandProcessor(UuidInterface $entityId, string $newValue): Endpoint
     {
         return new CallableEndpoint(
-            function () use ($em, $entityId, $newValue): void {
-                $this->getTransactionManager()->transactional(function () use ($em, $entityId, $newValue): void {
-                    $entity = $this->getLockedStoredTestEntity($em, $entityId);
+            function () use ($entityId, $newValue): void {
+                $this->getTransactionManager()->transactional(function () use ($entityId, $newValue): void {
+                    $entity = $this->getLockedStoredTestEntity($entityId);
                     $entity->setValue($newValue);
-                    $this->getTransactionManager()->save($entity);
                 });
             }
         );
@@ -228,7 +227,7 @@ final class NestedTransactionTest extends PersistenceTestCase
         return new CallableEndpoint(
             function () use ($em, $entityId, $newValue): void {
                 $this->getTransactionManager()->transactional(function () use ($em, $entityId, $newValue): void {
-                    $entity = $this->getLockedStoredTestEntity($em, $entityId);
+                    $entity = $em->find(TestEntity::class, $entityId, LockMode::PESSIMISTIC_WRITE);
                     $entity->setValue($newValue);
                 });
             }
@@ -282,8 +281,8 @@ final class NestedTransactionTest extends PersistenceTestCase
         return $em->getRepository(TestEntity::class)->find($id);
     }
 
-    private function getLockedStoredTestEntity(EntityManagerInterface $em, UuidInterface $id): ?TestEntity
+    private function getLockedStoredTestEntity(UuidInterface $id): ?TestEntity
     {
-        return $em->getRepository(TestEntity::class)->find($id, LockMode::PESSIMISTIC_WRITE);
+        return $this->getTransactionManager()->getLocked(TestEntity::class, $id);
     }
 }
