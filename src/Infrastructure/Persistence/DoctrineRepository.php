@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Sbooker\CommandBus\Infrastructure\Persistence;
 
+use Doctrine\DBAL\LockMode;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
+use Ramsey\Uuid\UuidInterface;
 use Sbooker\CommandBus\Command;
 use Sbooker\CommandBus\ReadStorage;
-use Sbooker\CommandBus\WriteStorage;
 use Sbooker\CommandBus\Status;
-use Doctrine\DBAL\LockMode;
-use Ramsey\Uuid\UuidInterface;
+use Sbooker\CommandBus\WriteStorage;
 
 class DoctrineRepository extends EntityRepository implements WriteStorage, ReadStorage
 {
@@ -62,7 +62,7 @@ class DoctrineRepository extends EntityRepository implements WriteStorage, ReadS
                 )
                 ->andWhere('t.attemptCounter.nextAttemptAt < :now')
                 ->orderBy('t.attemptCounter.nextAttemptAt', 'ASC')
-                ->setParameter('now', new \DateTimeImmutable())
+                ->setParameter('now', new \DateTimeImmutable(), Types::DATETIMETZ_IMMUTABLE)
                 ->setMaxResults(1)
                 ->getQuery()
                 ->setLockMode(LockMode::PESSIMISTIC_WRITE)
