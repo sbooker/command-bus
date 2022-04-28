@@ -16,8 +16,8 @@
         "ramsey/uuid": "^4.0",
         "sbooker/workflow": "^1.1",
         "sbooker/transaction-manager": "^2.0",
-        "symfony/serializer": "^5.0",
-        "symfony/property-access": "^5.0"
+        "symfony/serializer": "^5.0 || ^6.0",
+        "symfony/property-access": "^5.0 || ^6.0"
     },
     "require-dev": {
         "doctrine/cache": "^1.12",
@@ -26,7 +26,7 @@
         "psr/container": "1.0.0",
         "ramsey/uuid-doctrine": "^1.6",
         "sbooker/enumerable-doctrine": "^1.1",
-        "sbooker/doctrine-transaction-handler": "^2.0"
+        "sbooker/doctrine-transaction-handler": "2.0.1"
     },
     "suggest": {
         "doctrine/orm": "If you want use DB persistence with Doctrine",
