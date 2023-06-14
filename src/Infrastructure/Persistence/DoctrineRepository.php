@@ -55,8 +55,8 @@ class DoctrineRepository extends EntityRepository implements WriteStorage, ReadS
                     $expr->in(
                         "t.workflow.status",
                         [
-                            Status::created()->getRawValue(),
-                            Status::pending()->getRawValue()
+                            Status::created->getRawValue(),
+                            Status::pending->getRawValue()
                         ]
                     )
                 )
