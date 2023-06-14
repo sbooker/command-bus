@@ -12,27 +12,25 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": "^7.4 || ^8.0",
+        "php": "^8.1",
         "ramsey/uuid": "^4.0",
-        "sbooker/workflow": "^1.1",
+        "sbooker/workflow": "^2.0",
         "sbooker/transaction-manager": "^2.2",
         "symfony/serializer": "^5.0 || ^6.0",
         "symfony/property-access": "^5.0 || ^6.0"
     },
     "require-dev": {
         "doctrine/cache": "^1.12",
-        "doctrine/orm": "^2.9",
+        "doctrine/orm": "^2.11",
         "phpunit/phpunit": "^9.0",
         "psr/container": "1.0.0",
         "ramsey/uuid-doctrine": "^1.6",
-        "sbooker/enumerable-doctrine": "^1.1",
         "sbooker/doctrine-transaction-handler": "^2.2"
     },
     "suggest": {
         "doctrine/orm": "If you want use DB persistence with Doctrine",
         "psr/container": "If you want use container registry implementation",
         "ramsey/uuid-doctrine": "",
-        "sbooker/doctrine-enumerable-type": "",
         "sbooker/doctrine-transaction-handler": "",
         "sbooker/console": "If you want use debug commands",
         "sbooker/event-loop-worker": "If you want handle command in background process"

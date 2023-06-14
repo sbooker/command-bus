@@ -3,7 +3,7 @@
                   xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
                           https://www.doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
     <embeddable name="Sbooker\CommandBus\Workflow">
-        <field name="status" type="command_status"/>
+        <field name="status" type="string" enum-type="Sbooker\Workflow\Status"/>
         <field name="changedAt" type="datetimetz_immutable"/>
     </embeddable>
 

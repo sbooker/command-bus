@@ -4,25 +4,14 @@ declare(strict_types=1);
 
 namespace Sbooker\CommandBus;
 
-final class Status extends \Sbooker\Workflow\Status
+use Sbooker\Workflow\EnumTrait;
+
+enum Status: string implements \Sbooker\Workflow\Status
 {
-    public static function created(): self
-    {
-        return self::createEnum('created');
-    }
+    use EnumTrait;
 
-    public static function pending(): self
-    {
-        return self::createEnum('pending');
-    }
-
-    public static function success(): self
-    {
-        return self::createEnum('success');
-    }
-
-    public static function fail(): self
-    {
-        return self::createEnum('fail');
-    }
+    case created = 'created';
+    case pending = 'pending';
+    case success = 'success';
+    case fail = 'fail';
 }

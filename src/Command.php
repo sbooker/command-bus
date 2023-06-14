@@ -33,7 +33,7 @@ use Ramsey\Uuid\UuidInterface;
     public function execute(Registry $registry, Denormalizer $denormalizer): void
     {
         try {
-            $this->transitTo(Status::pending());
+            $this->transitTo(Status::pending);
             $this->attemptCounter->nextAttempt($registry->getTimeoutCalculator($this->getName()));
 
             $registry->getEndpoint($this->getName())
@@ -70,7 +70,7 @@ use Ramsey\Uuid\UuidInterface;
      */
     private function registerFail(?callable $callback): void
     {
-        $this->finalize(Status::fail(), $callback);
+        $this->finalize(Status::fail, $callback);
     }
 
     /**
@@ -78,7 +78,7 @@ use Ramsey\Uuid\UuidInterface;
      */
     private function registerComplete(?callable $callback): void
     {
-        $this->finalize(Status::success(), $callback);
+        $this->finalize(Status::success, $callback);
     }
 
     /**

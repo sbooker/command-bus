@@ -29,7 +29,7 @@ final class CommandTest extends TestCase
         $this->assertPropertyEquals($id, $command, 'id');
         $this->assertNormalizedCommand(new NormalizedCommand($name, $normalizedPayload), $command);
         $this->assertNull($command->getState()->getResult());
-        $this->assertStatus(Status::created(), $command);
+        $this->assertStatus(Status::created, $command);
         $this->assertAttemptCounter(0, $command);
     }
 
@@ -51,7 +51,7 @@ final class CommandTest extends TestCase
             $this->createDenormalizer($normalizedPayload, $name, $payload)
         );
 
-        $this->assertStatus(Status::success(), $command);
+        $this->assertStatus(Status::success, $command);
         $this->assertAttemptCounter(1, $command);
     }
 
@@ -74,7 +74,7 @@ final class CommandTest extends TestCase
             $this->createDenormalizer($normalizedPayload, $name, $payload)
         );
 
-        $this->assertStatus(Status::pending(), $command);
+        $this->assertStatus(Status::pending, $command);
         $this->assertAttemptCounter(1, $command);
         $this->assertEquals(
             [
@@ -105,7 +105,7 @@ final class CommandTest extends TestCase
             $this->createDenormalizer($normalizedPayload, $name, $payload)
         );
 
-        $this->assertStatus(Status::fail(), $command);
+        $this->assertStatus(Status::fail, $command);
         $this->assertAttemptCounter(1, $command);
         $this->assertNull($command->getState()->getResult());
     }
