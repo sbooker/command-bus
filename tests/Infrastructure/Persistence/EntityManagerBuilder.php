@@ -15,7 +15,6 @@ use Sbooker\CommandBus\Infrastructure\Persistence\Mapping\StatusType;
 final class EntityManagerBuilder
 {
     public const PGSQL12 = 'pgsql12';
-    public const MYSQL5 = 'mysql5';
     public const MYSQL8 = 'mysql8';
 
     private static ?EntityManagerBuilder $me = null;
@@ -78,14 +77,6 @@ final class EntityManagerBuilder
                     'host' => self::PGSQL12,
                     'port' => 5432,
                     'server_version' => '12',
-                ];
-                break;
-            case self::MYSQL5:
-                $params = [
-                    'driver' => 'pdo_mysql',
-                    'host' => self::MYSQL5,
-                    'port' => 3306,
-                    'server_version' => '5',
                 ];
                 break;
             case self::MYSQL8:

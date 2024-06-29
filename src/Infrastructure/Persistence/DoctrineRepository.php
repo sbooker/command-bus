@@ -1,85 +1,150 @@
 <?php
 
-declare(strict_types=1);
-
 namespace Sbooker\CommandBus\Infrastructure\Persistence;
 
-use Doctrine\DBAL\LockMode;
-use Doctrine\DBAL\Types\Types;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception as DBALException;
+use Doctrine\DBAL\ParameterType;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Query\Expression\ExpressionBuilder;
+use Doctrine\DBAL\Query\ForUpdate\ConflictResolutionMode;
+use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\QueryBuilder;
+use Doctrine\ORM\Exception\ORMException;
+use Doctrine\ORM\NonUniqueResultException;
+use Doctrine\ORM\Query\ResultSetMappingBuilder;
+use Doctrine\Persistence\Mapping\MappingException;
 use Ramsey\Uuid\UuidInterface;
 use Sbooker\CommandBus\Command;
 use Sbooker\CommandBus\ReadStorage;
 use Sbooker\CommandBus\Status;
 use Sbooker\CommandBus\WriteStorage;
 
-class DoctrineRepository extends EntityRepository implements WriteStorage, ReadStorage
+final class DoctrineRepository extends EntityRepository implements WriteStorage, ReadStorage
 {
-    /**
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     * @throws \Doctrine\ORM\TransactionRequiredException
-     */
-    public function getAndLock(array $names, UuidInterface $id): ?Command
-    {
-        return
-            $this->createQueryBuilderWithNamesCondition('t', $names)
-                ->andWhere('t.id = :id')
-                ->setParameter('id', $id)
-                ->getQuery()
-                ->setLockMode(LockMode::PESSIMISTIC_WRITE)
-                ->getOneOrNullResult()
-            ;
-    }
-
-    /**
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     */
     public function get(UuidInterface $id): ?Command
     {
         return $this->find($id);
     }
 
     /**
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     * @throws \Doctrine\ORM\TransactionRequiredException
+     * @throws ORMException
+     * @throws \ReflectionException
+     * @throws MappingException
+     */
+    public function getAndLock(array $names, UuidInterface $id): ?Command
+    {
+        $alias = 'c';
+        $qb = $this->createDbalQueryBuilderWithCommonExpression($alias, $names);
+        $sql = $qb
+            ->andWhere('c.id = :id')
+            ->getSQL();
+
+        return $this->findCommandBySQL($alias, $sql, ['id' => $id->toString()]);
+    }
+
+    /**
+     * @throws ORMException
+     * @throws \ReflectionException
+     * @throws MappingException|DBALException
      */
     public function getFirstToProcessAndLock(array $names): ?Command
     {
-        $builder = $this->createQueryBuilderWithNamesCondition('t', $names);
-        $expr = $builder->expr();
+        $alias = 'c';
+        $qb = $this->createDbalQueryBuilderWithCommonExpression($alias, $names);
+
+        $sql = $qb
+            ->andWhere(
+                $this->buildInExpr(
+                    $qb->expr(),
+                    'c.status',
+                    [
+                        Status::created()->getRawValue(),
+                        Status::pending()->getRawValue()
+                    ]
+                )
+            )
+            ->andWhere('c.next_attempt_at < :now')
+            ->orderBy('c.next_attempt_at', 'ASC')
+            ->setMaxResults(1)
+            ->getSQL()
+        ;
+
+        return $this->findCommandBySQL($alias, $sql, [
+            'now' => (new \DateTimeImmutable())->format($this->getPlatform()->getDateTimeTzFormatString()),
+        ]);
+    }
+
+    /**
+     * @throws \ReflectionException
+     * @throws MappingException
+     */
+    private function createDbalQueryBuilderWithCommonExpression(string $alias, array $names): QueryBuilder
+    {
+        $qb = $this->getConnection()->createQueryBuilder();
+        $qb
+            ->select("$alias.*")
+            ->from($this->getTableName(), $alias)
+            ->forUpdate(ConflictResolutionMode::SKIP_LOCKED)
+        ;
+
+        if ([] !== $names) {
+            $qb->andWhere($this->buildInExpr($qb->expr(), "$alias.name", $names));
+        }
+
+        return $qb;
+    }
+
+    private function buildInExpr(ExpressionBuilder $expr, string $field, array $values): string
+    {
+        if ([] === $values) {
+            throw new \InvalidArgumentException("Parameter values must not be empty");
+        }
 
         return
-            $builder
-                ->andWhere(
-                    $expr->in(
-                        "t.workflow.status",
-                        [
-                            Status::created()->getRawValue(),
-                            Status::pending()->getRawValue()
-                        ]
-                    )
+            $expr->in(
+                $field,
+                array_map(
+                    fn(string $name) => $expr->literal($name, ParameterType::STRING),
+                    $values
                 )
-                ->andWhere('t.attemptCounter.nextAttemptAt < :now')
-                ->orderBy('t.attemptCounter.nextAttemptAt', 'ASC')
-                ->setParameter('now', new \DateTimeImmutable(), Types::DATETIMETZ_IMMUTABLE)
-                ->setMaxResults(1)
-                ->getQuery()
-                ->setLockMode(LockMode::PESSIMISTIC_WRITE)
+            );
+    }
+
+    /**
+     * @throws NonUniqueResultException
+     */
+    private function findCommandBySQL(string $tableAlias, string $sql, array $parameters): ?Command
+    {
+        $rsm = new ResultSetMappingBuilder($this->getEntityManager());
+        $rsm->addRootEntityFromClassMetadata(Command::class, $tableAlias);
+
+        return
+            $this->getEntityManager()
+                ->createNativeQuery($sql, $rsm)
+                ->setParameters($parameters)
                 ->getOneOrNullResult();
     }
 
-    private function createQueryBuilderWithNamesCondition(string $alias, array $names): QueryBuilder
+    /**
+     * @throws MappingException
+     * @throws \ReflectionException
+     */
+    private function getTableName(): string
     {
-        $builder = $this->createQueryBuilder($alias);
+        return $this->getEntityManager()->getMetadataFactory()->getMetadataFor(Command::class)->getTableName();
+    }
 
-        if ([] === $names) {
-            return $builder;
-        }
+    /**
+     * @throws DBALException
+     */
+    private function getPlatform(): AbstractPlatform
+    {
+        return $this->getConnection()->getDatabasePlatform();
+    }
 
-        $expr = $builder->expr();
-        $builder->andWhere($expr->in("$alias.normalizedCommand.name", $names));
-
-        return $builder;
+    private function getConnection(): Connection
+    {
+        return $this->getEntityManager()->getConnection();
     }
 }

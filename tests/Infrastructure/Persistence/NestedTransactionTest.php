@@ -241,7 +241,8 @@ final class NestedTransactionTest extends PersistenceTestCase
             $this->createRegistry($commandName, $endpoint),
             $this->createDenormalizer($commandName),
             $commandRepository,
-            $this->getTransactionManager()
+            $this->getTransactionManager(),
+            [$commandName]
         );
     }
 

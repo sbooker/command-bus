@@ -22,11 +22,18 @@ You need to make sure that firstly do all checks are and throws exceptions.
 
 And only then mutates state of entities.
 
-## Example usage with Symfony and Doctrine (while bundle not written)
+## Example usage with Symfony and Doctrine (without bundle)
+
+> #### Important!
+> Build-in realization persistence layer of command bus require doctrine/dbal:^3.8 and 
+> database supports SELECT FOR UPDATE SKIP LOCKED (MySQL 8.0+, PostgreSQL 9.5+)  
 
 Install suggest libraries:
 ```bash
-composer require sbooker/doctrine-enumerable-type sbooker/doctrine-transaction-handler ramsey/uuid-doctrine
+composer  require sbooker/doctrine-enumerable-type \
+          sbooker/doctrine-transaction-handler \
+          ramsey/uuid-doctrine \
+          doctrine/dbal:^3.8
 ```
 
 To use default configuration configure as bellow:
@@ -46,7 +53,7 @@ doctrine:
 
 services:
   Sbooker\CommandBus\CommandBus:
-    class: Sbooker\CommandBus\PersistentCommandCommandBus
+    class: Sbooker\CommandBus\PersistentCommandBus
     arguments:
       - '@Sbooker\CommandBus\Normalizer'
       - '@Sbooker\TransactionManager\TransactionManager'
