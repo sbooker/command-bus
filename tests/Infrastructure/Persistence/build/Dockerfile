@@ -1,4 +1,5 @@
-FROM php:8.1-fpm
+ARG PHP_VER=8.2
+FROM php:${PHP_VER}-fpm
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     unzip \
@@ -11,11 +12,16 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && pecl install APCu xdebug \
     && docker-php-ext-enable apcu xdebug \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && rm -rf  /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-    && useradd --create-home --uid 1000 --user-group --system app
+    && rm -rf  /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY php.ini /usr/local/etc/php
 
+COPY --chown=app:app id_rsa /home/app/.ssh/id_rsa
+RUN chmod 600 /home/app/.ssh/id_rsa
+RUN touch /home/app/.ssh/known_hosts
+
 WORKDIR /opt/app
 
-USER app
+
+
+

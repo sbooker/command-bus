@@ -1,13 +1,24 @@
-all: up install test down
+dc := docker compose -p cb -f ./build/docker-compose.yaml
+dcup := $(dc) up --build -d
 
-up:
-	docker-compose -p cb -f ./build/docker-compose.yaml up --build -d
+all:
+	up-db
+	up-php VER=8.3
+	update
+	test
+	down
 
-install:
-	docker-compose -p cb -f ./build/docker-compose.yaml exec app composer install
-
+up-db:
+	$(dcup) mysql8 && \
+	$(dcup) pgsql12
+up-php:
+	$(dc) build --build-arg PHP_VER=$(VER) && \
+	$(dc) up -d app
+update:
+	$(dc) exec app composer update
 test:
-	docker-compose -p cb -f ./build/docker-compose.yaml exec app ./vendor/bin/phpunit ./tests/Infrastructure/Persistence
-
+	$(dc) exec app ./vendor/bin/phpunit ./tests/Infrastructure/Persistence
 down:
-	docker-compose -p cb -f ./build/docker-compose.yaml down --rmi all
+	$(dc) down
+down-all:
+	$(dc) down --rmi all

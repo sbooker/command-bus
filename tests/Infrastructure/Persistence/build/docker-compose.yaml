@@ -1,20 +1,17 @@
-version: '3'
 services:
   app:
     build:
-      context: ""
+      context: .
       dockerfile: Dockerfile
     environment:
       XDEBUG_CONFIG: client_host=host.docker.internal
       PHP_IDE_CONFIG: serverName=app
     volumes:
-      - ~/.ssh:/home/app/.ssh:ro
       - ../../../../:/opt/app
     tty: true
     restart: always
     depends_on:
       - pgsql12
-      - mysql5
       - mysql8
 
   pgsql12:
@@ -24,15 +21,6 @@ services:
       POSTGRES_PASSWORD: password
       POSTGRES_USER: user
       POSTGRES_DB: test
-
-  mysql5:
-    image: mysql/mysql-server:5.5
-    restart: always
-    environment:
-      MYSQL_DATABASE: 'test'
-      MYSQL_USER: 'user'
-      MYSQL_PASSWORD: 'password'
-      MYSQL_ROOT_PASSWORD: 'password'
 
   mysql8:
     image: mysql:8

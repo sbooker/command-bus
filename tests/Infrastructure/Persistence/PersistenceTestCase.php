@@ -92,7 +92,6 @@ abstract class PersistenceTestCase extends TestCase
     {
         return [
             [ EntityManagerBuilder::PGSQL12 ],
-            [ EntityManagerBuilder::MYSQL5 ],
             [ EntityManagerBuilder::MYSQL8 ],
         ];
     }

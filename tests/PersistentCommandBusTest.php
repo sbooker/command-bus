@@ -6,15 +6,9 @@ namespace Sbooker\CommandBus\Tests;
 
 use Ramsey\Uuid\Uuid;
 use Sbooker\CommandBus\Command;
-use Sbooker\CommandBus\NameGiver;
 use Sbooker\CommandBus\NormalizedCommand;
 use Sbooker\CommandBus\Normalizer;
-use Sbooker\CommandBus\PersistentCommandCommandBus;
-use Sbooker\CommandBus\ReadStorage;
-use Sbooker\CommandBus\Status;
-use Sbooker\CommandBus\WriteStorage;
-use Sbooker\TransactionManager\TransactionHandler;
-use Sbooker\TransactionManager\TransactionManager;
+use Sbooker\CommandBus\PersistentCommandBus;
 
 final class PersistentCommandBusTest extends BusTestCase
 {
@@ -25,7 +19,7 @@ final class PersistentCommandBusTest extends BusTestCase
         $normalizer = $this->createNormalizer($payload);
         $command = new Command($commandId, $payload, $normalizer);
         $bus =
-            new PersistentCommandCommandBus(
+            new PersistentCommandBus(
                 $normalizer,
                 $this->createTransactionManager(0, $command, 0),
                 $this->createReadStorage($command)
@@ -41,7 +35,7 @@ final class PersistentCommandBusTest extends BusTestCase
         $normalizer = $this->createNormalizer($payload);
         $command = new Command($commandId, $payload, $normalizer);
         $bus =
-            new PersistentCommandCommandBus(
+            new PersistentCommandBus(
                 $normalizer,
                 $this->createTransactionManager(1, $command),
                 $this->createReadStorage(null)
@@ -57,7 +51,7 @@ final class PersistentCommandBusTest extends BusTestCase
         $normalizer = $this->createNormalizer($payload);
         $command = new Command($commandId, $payload, $normalizer);
         $bus =
-            new PersistentCommandCommandBus(
+            new PersistentCommandBus(
                 $normalizer,
                 $this->createTransactionManager(0, $command, 0),
                 $this->createReadStorage($command)
@@ -75,7 +69,7 @@ final class PersistentCommandBusTest extends BusTestCase
         $normalizer = $this->createNormalizer($payload);
         $command = new Command($commandId, $payload, $normalizer);
         $bus =
-            new PersistentCommandCommandBus(
+            new PersistentCommandBus(
                 $normalizer,
                 $this->createTransactionManager(0, $command, 0),
                 $this->createReadStorage(null)

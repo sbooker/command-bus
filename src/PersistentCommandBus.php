@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace Sbooker\CommandBus;
 
 use Ramsey\Uuid\UuidInterface;
-use Sbooker\CommandBus\CommandBus;
 use Sbooker\TransactionManager\TransactionManager;
 
-final class PersistentCommandCommandBus implements CommandBus
+final class PersistentCommandBus implements CommandBus
 {
     private Normalizer $normalizer;
 
