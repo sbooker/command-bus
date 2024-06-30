@@ -8,6 +8,7 @@ use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Sbooker\CommandBus\AttemptCounter;
 use Sbooker\CommandBus\Command;
+use Sbooker\CommandBus\Status;
 use Sbooker\CommandBus\Workflow;
 
 class DoctrineRepositoryTest extends PersistenceTestCase
@@ -66,6 +67,7 @@ class DoctrineRepositoryTest extends PersistenceTestCase
 
         $expectedCommandName = 'command.name';
         $otherCommandName = 'other.command.name';
+
         $expectedCommand = $this->createCommand(Uuid::uuid4(), $expectedCommandName, '-10seconds');
         $secondCommand = $this->createCommand(Uuid::uuid4(), $otherCommandName, '-5seconds');
         $this->makeFixtures($expectedCommand);
@@ -79,6 +81,35 @@ class DoctrineRepositoryTest extends PersistenceTestCase
         $this->assertCommandEquals($expectedCommand, $command);
 
         $this->tearDownDbDeps($em);
+    }
+
+
+    /**
+     * @dataProvider dbs
+     */
+    public function testCleanSuccess(string $db)
+    {
+        $em = $this->setUpDbDeps($db);
+
+        $repository = $this->getRepository($em);
+        $commandId = Uuid::uuid4();
+        $otherCommandId = Uuid::uuid4();
+        $commandName = 'command.name';
+        $command = $this->createCommandWithStatus($commandId, $commandName, Status::success(),'-2days');
+        $otherCommand = $this->createCommandWithStatus($otherCommandId, $commandName, Status::fail(), '-5days');
+        $this->makeFixtures($command);
+        $this->makeFixtures($otherCommand);
+
+        $repository->cleanFailedCommands(new \DateTimeImmutable('-3days'));
+
+        $this->assertNotNull($repository->get($commandId));
+        $this->assertNull($repository->get($otherCommandId));
+
+        $em->clear();
+
+        $repository->cleanSuccessCommands(new \DateTimeImmutable('-1day'));
+
+        $this->assertNull($repository->get($commandId));
     }
 
     private function assertCommandEquals(Command $expected, Command $given): void
