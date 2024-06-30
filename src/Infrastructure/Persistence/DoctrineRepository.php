@@ -15,12 +15,13 @@ use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\Query\ResultSetMappingBuilder;
 use Doctrine\Persistence\Mapping\MappingException;
 use Ramsey\Uuid\UuidInterface;
+use Sbooker\CommandBus\CleanStorage;
 use Sbooker\CommandBus\Command;
 use Sbooker\CommandBus\ReadStorage;
 use Sbooker\CommandBus\Status;
 use Sbooker\CommandBus\WriteStorage;
 
-final class DoctrineRepository extends EntityRepository implements WriteStorage, ReadStorage
+final class DoctrineRepository extends EntityRepository implements WriteStorage, ReadStorage, CleanStorage
 {
     public function get(UuidInterface $id): ?Command
     {
@@ -146,5 +147,42 @@ final class DoctrineRepository extends EntityRepository implements WriteStorage,
     private function getConnection(): Connection
     {
         return $this->getEntityManager()->getConnection();
+    }
+
+    /**
+     * @throws DBALException
+     * @throws MappingException
+     * @throws \ReflectionException
+     */
+    public function cleanSuccessCommands(\DateTimeImmutable $before): void
+    {
+        $this->clean(Status::success(), $before);
+    }
+
+    /**
+     * @throws DBALException
+     * @throws MappingException
+     * @throws \ReflectionException
+     */
+    public function cleanFailedCommands(\DateTimeImmutable $before): void
+    {
+        $this->clean(Status::fail(), $before);
+    }
+
+    /**
+     * @throws DBALException
+     * @throws MappingException
+     * @throws \ReflectionException
+     */
+    private function clean(Status $status, \DateTimeImmutable $before): void
+    {
+        $qb = $this->getConnection()->createQueryBuilder();
+
+        $qb->delete($this->getTableName(), 'c')
+            ->andWhere('c.status = :status')
+            ->andWhere('c.next_attempt_at < :before')
+            ->setParameter('status', $status->getRawValue())
+            ->setParameter('before', $before->format($this->getPlatform()->getDateTimeTzFormatString()))
+            ->executeStatement();
     }
 }
