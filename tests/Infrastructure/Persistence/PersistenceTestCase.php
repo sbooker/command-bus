@@ -7,13 +7,15 @@ namespace Sbooker\CommandBus\Tests\Infrastructure\Persistence;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\SchemaTool;
 use Ramsey\Uuid\UuidInterface;
+use Sbooker\CommandBus\AttemptCounter;
 use Sbooker\CommandBus\Command;
 use Sbooker\CommandBus\Infrastructure\Persistence\DoctrineRepository;
 use Sbooker\CommandBus\NormalizedCommand;
 use Sbooker\CommandBus\Normalizer;
+use Sbooker\CommandBus\Status;
+use Sbooker\CommandBus\Tests\TestCase;
 use Sbooker\TransactionManager\DoctrineTransactionHandler;
 use Sbooker\TransactionManager\TransactionManager;
-use Sbooker\CommandBus\Tests\TestCase;
 
 abstract class PersistenceTestCase extends TestCase
 {
@@ -47,6 +49,18 @@ abstract class PersistenceTestCase extends TestCase
         $command = new Command($commandId, new \stdClass(), $this->createNormalizer($commandName));
         $workflow = $this->getPrivatePropertyValue($command, 'attemptCounter');
         $this->openProperty($workflow, 'nextAttemptAt')->setValue($workflow, new \DateTimeImmutable($nextAttemptAt));
+
+        return $command;
+    }
+
+    final protected function createCommandWithStatus(UuidInterface $commandId, string $commandName, Status $status, string $nextAttemptAt = 'now'): Command
+    {
+        $command = new Command($commandId, new \stdClass(), $this->createNormalizer($commandName));
+        /** @var AttemptCounter $attemptCounter */
+        $attemptCounter = $this->getPrivatePropertyValue($command, 'attemptCounter');
+        $this->openProperty($attemptCounter, 'nextAttemptAt')->setValue($attemptCounter, new \DateTimeImmutable($nextAttemptAt));
+        $workflow = $this->getPrivatePropertyValue( $command,'workflow');
+        $this->openProperty($workflow, 'status')->setValue($workflow, $status);
 
         return $command;
     }

@@ -22,13 +22,14 @@
     },
     "require-dev": {
         "doctrine/cache": "^1.12",
-        "doctrine/orm": "^2.9 || ^3.0",
         "doctrine/dbal": "^3.8 || ^4.0",
+        "doctrine/orm": "^2.9 || ^3.0",
         "phpunit/phpunit": "^9.0",
         "psr/container": "1.0.0",
         "ramsey/uuid-doctrine": "^1.6",
-        "sbooker/enumerable-doctrine": "^1.1",
-        "sbooker/doctrine-transaction-handler": "^2.2"
+        "sbooker/console": "^1.1",
+        "sbooker/doctrine-transaction-handler": "^2.2",
+        "sbooker/enumerable-doctrine": "^1.1"
     },
     "suggest": {
         "doctrine/orm": "If you want use DB persistence with Doctrine",
